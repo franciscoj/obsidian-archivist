@@ -6,15 +6,17 @@ import {
 	Notice,
 	Plugin,
 	PluginSettingTab,
+	sanitizeHTMLToDom,
 	Setting,
 } from "obsidian";
 
 interface ArchivistSettings {
-	mySetting: string;
+	archiveTo: string;
 }
 
 const DEFAULT_SETTINGS: ArchivistSettings = {
-	mySetting: "default",
+	// Defines the name of the metadata property used to decide where each note is archived.
+	archiveTo: "archive_to",
 };
 
 export default class Archivist extends Plugin {
@@ -26,7 +28,7 @@ export default class Archivist extends Plugin {
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon(
 			"dice",
-			"Sample Plugin",
+			"Archivist",
 			(evt: MouseEvent) => {
 				// Called when the user clicks the icon.
 				new Notice("This is a notice!");
@@ -78,7 +80,7 @@ export default class Archivist extends Plugin {
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new ArchivistSettingTab(this.app, this));
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
@@ -123,7 +125,7 @@ class SampleModal extends Modal {
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
+class ArchivistSettingTab extends PluginSettingTab {
 	plugin: Archivist;
 
 	constructor(app: App, plugin: Archivist) {
@@ -137,14 +139,23 @@ class SampleSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Setting #1")
-			.setDesc("It's a secret")
+			.setName("Property name for the archive destination folder.")
+			.setDesc(
+				sanitizeHTMLToDom(`
+					Set this property to the desired property you want to use to
+					find the destination folder for your note when you archive it.
+					<br><br>
+					As an example you can set this property to your desired
+					destination on your template. I use it to archive my
+					journals on separated folders by year and month.
+				`),
+			)
 			.addText((text) =>
 				text
-					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings.mySetting)
+					.setPlaceholder("archive_to")
+					.setValue(this.plugin.settings.archiveTo)
 					.onChange(async (value) => {
-						this.plugin.settings.mySetting = value;
+						this.plugin.settings.archiveTo = value;
 						await this.plugin.saveSettings();
 					}),
 			);
