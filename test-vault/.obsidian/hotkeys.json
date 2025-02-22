@@ -1,0 +1,11 @@
+{
+  "hot-reload:scan-for-changes": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "R"
+    }
+  ]
+}
