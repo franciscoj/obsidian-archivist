@@ -1,3 +1,4 @@
+import { archive } from "lib/archive";
 import {
 	App,
 	Editor,
@@ -76,6 +77,26 @@ export default class Archivist extends Plugin {
 					// This command will only show up in Command Palette when the check function returns true
 					return true;
 				}
+			},
+		});
+
+		this.addCommand({
+			id: "archivist-arhive-note",
+			name: "Archive note",
+			checkCallback: (checking: boolean) => {
+				const file = this.app.workspace.getActiveFile();
+
+				// This command can only run when there's an active file.
+				if (checking) return !!file;
+				if (!file) return;
+
+				archive(this, file)
+					.catch((error) => {
+						new Notice(`Couldn't archive the file: ${error}`);
+					})
+					.then(() => {
+						new Notice(`Archived ${file.basename}`);
+					});
 			},
 		});
 
