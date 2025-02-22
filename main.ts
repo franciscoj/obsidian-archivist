@@ -9,18 +9,16 @@ import {
 	Setting,
 } from "obsidian";
 
-// Remember to rename these classes and interfaces!
-
-interface MyPluginSettings {
+interface ArchivistSettings {
 	mySetting: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
+const DEFAULT_SETTINGS: ArchivistSettings = {
 	mySetting: "default",
 };
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class Archivist extends Plugin {
+	settings: ArchivistSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -35,11 +33,11 @@ export default class MyPlugin extends Plugin {
 			},
 		);
 		// Perform additional things with the ribbon
-		ribbonIconEl.addClass("my-plugin-ribbon-class");
+		ribbonIconEl.addClass("archivist-ribbon-class");
 
 		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
 		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText("Status Bar Text");
+		statusBarItemEl.setText("Archivist: loaded");
 
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
@@ -126,9 +124,9 @@ class SampleModal extends Modal {
 }
 
 class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+	plugin: Archivist;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: Archivist) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
