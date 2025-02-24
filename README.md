@@ -14,6 +14,19 @@ copy both the manifest and the build `main.js` files to your vault under the
 
 I advise you not to do that until the plugin reaches a more stable state.
 
+## Contributing
+
+This plugin is on its earliest stage of development. The architecture and
+organization of the code will change a lot and I didn't even invest on any sort
+of automated tests yet.
+
+If regardless of that you still want to contribute, you're more than welcome!
+Bug reports, pull requests, suggestions or any other sort of feedback is
+appreciated.
+
+Please just make sure to read the [code of conduct](./CODE_OF_CONDUCT.md) and
+respecting it before submitting any pull request or issue.
+
 ## Realistic Roadmap
 
 - New types of rules
