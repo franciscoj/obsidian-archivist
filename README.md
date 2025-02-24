@@ -14,6 +14,16 @@ copy both the manifest and the build `main.js` files to your vault under the
 
 I advise you not to do that until the plugin reaches a more stable state.
 
+## How it works?
+
+This first version looks for an `archive_to` property on the note you want to
+archive and then moves the note to that folder.
+
+The name of the property can be customized in settings.
+
+To archive the note use the `Archivist: Archive note` command from the command
+palette.
+
 ## Contributing
 
 This plugin is on its earliest stage of development. The architecture and
