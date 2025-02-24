@@ -32,6 +32,9 @@ class Property {
 	private async getProp(f: TFile): Promise<string> {
 		let prop = "";
 
+		// NOTE(franciscoj): [On 24/02/2025] there has to be a simpler version
+		// to do this, maybe there's a way to read the note properties from the
+		// cache instead?
 		await this.app.fileManager.processFrontMatter(f, (frontmatter) => {
 			prop = frontmatter[this.name] || "";
 		});
