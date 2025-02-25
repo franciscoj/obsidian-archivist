@@ -1,4 +1,4 @@
-import { Rule, ruleFrom } from "lib/rules";
+import { ruleFrom } from "lib/rules";
 import {
 	ArchivistSettingTab,
 	ArchivistSettings,
@@ -21,33 +21,23 @@ export default class Archivist extends Plugin {
 			name: "Archive note",
 			checkCallback: (checking: boolean) => {
 				const file = this.app.workspace.getActiveFile();
-
-				// This command can only run when there's an active file.
-				if (checking) return !!file;
 				if (!file) return;
 
-				this.settings.rules.every(async (r: Rule) => {
+				const rule = this.settings.rules.find((r) => {
 					const rule = ruleFrom(r, this.app);
-					let archived: boolean = false;
-
-					rule.matches(file).then((matches) => {
-						if (matches) {
-							archived = true;
-							rule.archive(file)
-								.then((newPath) => {
-									new Notice(
-										`Archived ${file.name} to ${newPath}.`,
-									);
-								})
-								.catch((e) => {
-									console.error(e);
-								});
-						}
-					});
-
-					// Returning `false` will exit from the `every` loop.
-					return !archived;
+					return rule.matches(file);
 				});
+
+				if (checking) return !!rule;
+				if (!rule) return;
+
+				rule.archive(file)
+					.then((newPath) => {
+						new Notice(`Archived ${file.name} to ${newPath}.`);
+					})
+					.catch((e) => {
+						console.error(e);
+					});
 			},
 		});
 

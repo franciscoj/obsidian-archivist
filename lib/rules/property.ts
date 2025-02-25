@@ -1,4 +1,4 @@
-import { App, TFile } from "obsidian";
+import { App, parseFrontMatterEntry, TFile } from "obsidian";
 import type { RuleProps } from "./rule";
 
 class Property {
@@ -12,34 +12,28 @@ class Property {
 	name: string;
 	app: App;
 
-	async matches(f: TFile): Promise<boolean> {
-		const prop = await this.getProp(f);
+	matches(f: TFile): boolean {
+		const prop = this.getProp(f);
 
 		return prop !== "";
 	}
 
 	async archive(f: TFile): Promise<string> {
-		const path = await this.getProp(f);
+		const path = this.getProp(f);
 		const archiveTo = `${path}/${f.name}`;
 
 		await this.ensureFolder(path);
 		await this.app.fileManager.renameFile(f, archiveTo);
-		console.debug("Archivist: ", "moved", f.path, archiveTo);
 
 		return archiveTo;
 	}
 
-	private async getProp(f: TFile): Promise<string> {
-		let prop = "";
+	private getProp(f: TFile): string {
+		const metadata = this.app.metadataCache.getCache(f.path);
+		const frontmatter = metadata?.frontmatter;
+		if (!frontmatter) return "";
 
-		// NOTE(franciscoj): [On 24/02/2025] there has to be a simpler version
-		// to do this, maybe there's a way to read the note properties from the
-		// cache instead?
-		await this.app.fileManager.processFrontMatter(f, (frontmatter) => {
-			prop = frontmatter[this.name] || "";
-		});
-
-		return prop;
+		return parseFrontMatterEntry(frontmatter, this.name) || "";
 	}
 
 	private async ensureFolder(path: string): Promise<void> {
