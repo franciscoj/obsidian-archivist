@@ -1,6 +1,6 @@
-import { Setting } from "obsidian";
-import { PropertyRule } from "lib/rules";
 import type { Rule } from "lib/rules";
+import { PropertyRule } from "lib/rules";
+import { Setting } from "obsidian";
 import { Settings } from "./model";
 
 interface Plugin {
@@ -23,18 +23,31 @@ class Renderer {
 		}
 	}
 
-	renderProperty(p: PropertyRule, el: HTMLElement): void {
+	renderProperty(property: PropertyRule, el: HTMLElement): void {
 		new Setting(el)
-			.setName("Archive Property")
+			.setName("Folder From Property")
 			.setDesc(
-				"The name of the property where Archivist will move this note.",
+				"Archivist will look for the name of a folder in this property and will move the note there to archive it.",
 			)
-			.addText((txt) => {
-				txt.setValue(p.name)
+			.addText((field) => {
+				field
+					.setValue(property.name)
 					.setPlaceholder("archive_to")
 					.onChange((value) => {
-						p.name = value;
+						property.name = value;
 						this.plugin.saveSettings();
+					});
+			})
+			.addExtraButton((btn) => {
+				btn.setIcon("circle-x")
+					.setTooltip("Remove this rule")
+					.onClick(() => {
+						console.info(
+							"Archivist",
+							"settings",
+							"removing",
+							property,
+						);
 					});
 			});
 	}

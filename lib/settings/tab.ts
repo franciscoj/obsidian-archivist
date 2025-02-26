@@ -1,5 +1,5 @@
 import type { Rule } from "lib/rules";
-import { App, Plugin, PluginSettingTab } from "obsidian";
+import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
 import { ArchivistSettings } from ".";
 import { Renderer } from "./renderer";
 
@@ -20,13 +20,28 @@ class Tab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		containerEl.empty();
-		containerEl.createEl("h2", { text: "Archivist" });
+		containerEl.createEl("h2", { text: "Archivist Rules" });
+
+		new Setting(containerEl)
+			.setName("Add a new rule")
+			.setDesc(
+				"You can add, remove, or reorder rules as you need them. Select the type of rule and click the (+) button.",
+			)
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption("property", "Folder from property")
+					.addOption("tags", "Match folder by tag");
+			})
+			.addExtraButton((btn) => {
+				btn.setIcon("circle-plus").setTooltip(
+					"Add a new rule of this type",
+				);
+			});
+
 		const renderer = new Renderer(this.plugin);
 
-		this.plugin.settings.rules.forEach(
-			(p: Rule, idx: number, ary: Rule[]) => {
-				renderer.render(p, containerEl);
-			},
+		this.plugin.settings.rules.forEach((p: Rule) =>
+			renderer.render(p, containerEl),
 		);
 	}
 }
