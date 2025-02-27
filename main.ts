@@ -1,4 +1,4 @@
-import { ruleFrom } from "lib/rules";
+import { PropertyRule, Rule, ruleFrom } from "lib/rules";
 import {
 	ArchivistSettingTab,
 	ArchivistSettings,
@@ -32,6 +32,9 @@ export default class Archivist extends Plugin {
 						new Notice(`Archived ${file.name} to ${newPath}.`);
 					})
 					.catch((e) => {
+						new Notice(
+							"There was an error while moving the file. Check the console for details.",
+						);
 						console.error(e);
 					});
 			},
@@ -44,11 +47,22 @@ export default class Archivist extends Plugin {
 	onunload() {}
 
 	async loadSettings() {
-		this.settings = Object.assign(
+		const raw = Object.assign(
 			{},
 			defaultSettings(this.app),
 			await this.loadData(),
 		);
+
+		const settings = new ArchivistSettings();
+
+		raw.rules.forEach((r: Rule) => {
+			if (r.__type == "property") {
+				settings.addRule(
+					new PropertyRule({ name: r.name, app: this.app }),
+				);
+			}
+		});
+		this.settings = settings;
 	}
 
 	async saveSettings() {

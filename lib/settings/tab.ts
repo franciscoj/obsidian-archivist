@@ -1,4 +1,4 @@
-import type { Rule } from "lib/rules";
+import { PropertyRule, type Rule } from "lib/rules";
 import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
 import { ArchivistSettings } from ".";
 import { Renderer } from "./renderer";
@@ -33,9 +33,18 @@ class Tab extends PluginSettingTab {
 					.addOption("tags", "Match folder by tag");
 			})
 			.addExtraButton((btn) => {
-				btn.setIcon("circle-plus").setTooltip(
-					"Add a new rule of this type",
-				);
+				btn.setIcon("circle-plus")
+					.setTooltip("Add a new rule of this type")
+					.onClick(() => {
+						this.plugin.settings.addRule(
+							new PropertyRule({
+								name: "archive_to",
+								app: this.plugin.app,
+							}),
+						);
+
+						this.display();
+					});
 			});
 
 		const renderer = new Renderer(this.plugin);

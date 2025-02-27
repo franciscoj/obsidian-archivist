@@ -4,10 +4,14 @@ import { App } from "obsidian";
 import { Settings } from "./model";
 
 const defaultSettings = function (app: App): Settings {
-	return {
-		rules: [new PropertyRule({ name: "archive_to", app })],
-	};
+	const settings = new Settings();
+	settings.addRule(new PropertyRule({ name: "archive_to", app }));
+
+	return settings;
 };
 
-export { defaultSettings, Tab as ArchivistSettingTab };
-export type { Settings as ArchivistSettings };
+export {
+	defaultSettings,
+	Tab as ArchivistSettingTab,
+	Settings as ArchivistSettings,
+};
